@@ -27,7 +27,7 @@ mod tests {
   #[test]
   fn test_hex_to_base64() {
     let valid_input = "f0f".to_string();
-    let output = cryptopals::hex_to_base64(valid_input);
+    let output = cryptopals::hex_to_base64(valid_input).unwrap();
     let expected = "8P".to_string();
 
     assert_eq!(output, expected);

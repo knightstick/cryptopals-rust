@@ -12,8 +12,8 @@ fn main() {
         Cli::HexToBase64 { hextext } => cryptopals::hex_to_base64(hextext),
     };
 
-    println!("{}", output)
+    match output {
+        Ok(output) => println!("{}", output),
+        Err(error) => println!("An error occurred: {}", error),
+    }
 }
-
-// 0100 1001 0010
-// 010010 010010

@@ -1,12 +1,12 @@
-pub fn hex_to_base64(hex: String) -> String {
+pub fn hex_to_base64(hex: String) -> Result<String, &'static str> {
   if let Ok(bytes) = hex_to_bytes(hex) {
     if let Ok(base64) = bytes_to_base64(bytes) {
-      format!("{}", base64)
+      Ok(format!("{}", base64))
     } else {
-      "Invalid bytes".to_string()
+      Err("Invalid bytes")
     }
   } else {
-    "Invalid hex".to_string()
+    Err("Invalid hex")
   }
 }
 
