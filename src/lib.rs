@@ -1,17 +1,10 @@
 pub fn hex_to_base64(hex: String) -> Result<String, &'static str> {
-  if let Ok(bytes) = hex_to_bytes(hex) {
-    if let Ok(base64) = bytes_to_base64(bytes) {
-      Ok(format!("{}", base64))
-    } else {
-      Err("Invalid bytes")
-    }
-  } else {
-    Err("Invalid hex")
-  }
+  let bytes = hex_to_bytes(hex)?;
+  bytes_to_base64(bytes)
 }
 
 pub fn hex_to_bytes(hex: String) -> Result<Vec<u8>, &'static str> {
-  let mut result = Vec::new();
+  let mut nibbles = Vec::new();
 
   for hex_char in hex.chars() {
     let byte_code = match hex_char {
@@ -34,10 +27,26 @@ pub fn hex_to_bytes(hex: String) -> Result<Vec<u8>, &'static str> {
       _ => return Err("Invalid hex character"),
     };
 
-    result.push(byte_code)
+    nibbles.push(byte_code)
   }
 
-  Ok(result)
+  let mut compacted: Vec<u8> = Vec::new();
+
+  for i in (0..nibbles.len()).step_by(2) {
+    let first_nibble = nibbles[i];
+
+    let second_nibble = if i + 1 < nibbles.len() {
+      nibbles[i + 1]
+    } else {
+      0
+    };
+
+    let byte = (first_nibble << 4) + second_nibble; // joins two nibbles into one byte, 1111, 0101 -> 11110101;
+
+    compacted.push(byte);
+  }
+
+  Ok(compacted)
 }
 
 pub fn bytes_to_base64(bytes: Vec<u8>) -> Result<String, &'static str> {
@@ -120,7 +129,7 @@ pub fn bytes_to_base64(bytes: Vec<u8>) -> Result<String, &'static str> {
 }
 
 fn each_six(bytes: Vec<u8>) -> Vec<u8> {
-  let total_digits = (bytes.len() * 4) / 6;
+  let total_digits = (bytes.len() * 8) / 6;
 
   let mut values: Vec<u8> = Vec::new();
 
@@ -135,9 +144,9 @@ fn read_six(bytes: &Vec<u8>, offset: usize) -> u8 {
   let mut value: u8 = 0;
 
   for index in offset..offset + 6 {
-    let byte = bytes[index / 4];
-    let bit = index % 4;
-    value = (value << 1) + ((byte >> (3 - bit)) & 1);
+    let byte = bytes[index / 8];
+    let bit = index % 8;
+    value = (value << 1) + ((byte >> (7 - bit)) & 1);
   }
 
   value
