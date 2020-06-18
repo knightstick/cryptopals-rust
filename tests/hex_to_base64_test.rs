@@ -2,7 +2,7 @@ mod tests {
   #[test]
   fn test_hex_to_bytes() {
     let valid_input = "49af".to_string();
-    let output = cryptopals::hex_to_bytes(valid_input).unwrap();
+    let output = cryptopals::conversion::hex_to_bytes(valid_input).unwrap();
     // 0b0100 0b1001 0b1010 0b1111 squashed
     let expected: Vec<u8> = vec![0b01001001, 0b10101111];
 
@@ -11,7 +11,7 @@ mod tests {
     let invalid_input = "invalid".to_string();
 
     assert!(
-      cryptopals::hex_to_bytes(invalid_input).is_err(),
+      cryptopals::conversion::hex_to_bytes(invalid_input).is_err(),
       "should not succeed"
     )
   }
@@ -19,7 +19,7 @@ mod tests {
   #[test]
   fn test_bytes_to_base64() {
     let valid_input: Vec<u8> = vec![0b11110000, 0b11110000, 0b11110000];
-    let output = cryptopals::bytes_to_base64(valid_input).unwrap();
+    let output = cryptopals::conversion::bytes_to_base64(valid_input).unwrap();
     let expected = "8PDw"; // 0b111100, 0b001111, 0b000011, 0b110000 -> 60, 15, 3, 48 -> 8, P, D, w
 
     assert_eq!(output, expected);
