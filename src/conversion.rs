@@ -44,6 +44,30 @@ pub fn hex_to_bytes(hex: String) -> Result<Vec<u8>, &'static str> {
   Ok(compacted)
 }
 
+pub fn bytes_to_hex(bytes: Vec<u8>) -> Result<String, &'static str> {
+  let mut result = String::new();
+
+  for byte in bytes.iter() {
+    let first_nibble: u8 = byte >> 4;
+    let second_nibble: u8 = byte & 0b00001111;
+
+    let symbol1 = match hex_char(first_nibble) {
+      Some(symbol) => symbol,
+      None => return Err("Non hex nibble"),
+    };
+
+    let symbol2 = match hex_char(second_nibble) {
+      Some(symbol) => symbol,
+      None => return Err("Non hex nibble"),
+    };
+
+    result.push(symbol1);
+    result.push(symbol2);
+  }
+
+  Ok(result)
+}
+
 pub fn bytes_to_base64(bytes: Vec<u8>) -> Result<String, &'static str> {
   let mut result = String::new();
 
@@ -145,4 +169,28 @@ fn read_six(bytes: &Vec<u8>, offset: usize) -> u8 {
   }
 
   value
+}
+
+fn hex_char(int: u8) -> Option<char> {
+  let ch = match int {
+    0 => '0',
+    1 => '1',
+    2 => '2',
+    3 => '3',
+    4 => '4',
+    5 => '5',
+    6 => '6',
+    7 => '7',
+    8 => '8',
+    9 => '9',
+    10 => 'a',
+    11 => 'b',
+    12 => 'c',
+    13 => 'd',
+    14 => 'e',
+    15 => 'f',
+    _ => return None,
+  };
+
+  Some(ch)
 }

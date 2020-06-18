@@ -33,4 +33,31 @@ mod tests {
 
     assert_eq!(output, expected);
   }
+
+  #[test]
+  fn test_bytes_to_hex_simplest() {
+    let valid_input: Vec<u8> = vec![0b11111111];
+    let output = cryptopals::conversion::bytes_to_hex(valid_input).unwrap();
+    let expected = "ff";
+
+    assert_eq!(output, expected);
+  }
+
+  #[test]
+  fn test_bytes_to_hex() {
+    let valid_input: Vec<u8> = vec![0b11111111, 0b10000000, 0b00000001];
+    let output = cryptopals::conversion::bytes_to_hex(valid_input).unwrap();
+    let expected = "ff8001";
+
+    assert_eq!(output, expected);
+  }
+
+  #[test]
+  fn test_bytes_to_hex_again() {
+    let valid_input: Vec<u8> = vec![0b11111111, 0b11111111];
+    let output = cryptopals::conversion::bytes_to_hex(valid_input).unwrap();
+    let expected = "ffff";
+
+    assert_eq!(output, expected);
+  }
 }
