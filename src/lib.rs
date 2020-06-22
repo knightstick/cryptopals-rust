@@ -41,11 +41,7 @@ pub fn decipher_single_byte_xor(input: String) -> Result<String, &'static str> {
     let ch_u8 = ch_int as u8;
 
     // XOR against the char repeated the right number of times
-    let mut repeated: Bytes = Vec::new();
-    for _ in 0..length {
-      repeated.push(ch_u8);
-    }
-
+    let repeated = vec![ch_u8; length];
     let xored_bytes = fixed_xor_bytes(&input_bytes, &repeated);
     let xored = String::from_utf8_lossy(&xored_bytes).into_owned();
 
