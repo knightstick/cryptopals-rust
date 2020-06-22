@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 pub mod conversion;
 pub mod language;
 
@@ -31,30 +29,18 @@ pub fn fixed_xor_bytes(first: &Bytes, second: &Bytes) -> Bytes {
 }
 
 pub fn decipher_single_byte_xor(input: String) -> Result<String, &'static str> {
-  let length = input.len();
   let input_bytes = conversion::hex_to_bytes(&input)?;
 
-  let mut scores: HashMap<String, usize> = HashMap::new();
+  let highest_with_score = (0..0b11111111).fold(("".to_string(), 0), |acc, ch| {
+    let (xored, score) = score_char(&input_bytes, ch);
+    if score > acc.1 {
+      (xored, score)
+    } else {
+      acc
+    }
+  });
 
-  // For each single byte char
-  for ch_int in 0..0b11111111 {
-    let ch_u8 = ch_int as u8;
-
-    // XOR against the char repeated the right number of times
-    let repeated = vec![ch_u8; length];
-    let xored_bytes = fixed_xor_bytes(&input_bytes, &repeated);
-    let xored = String::from_utf8_lossy(&xored_bytes).into_owned();
-
-    // Score the letter freqeuncies of the top 12 letters
-    let score = language::score_string(&xored);
-    scores.insert(xored, score);
-  }
-
-  // Return the XORed value with the highest score
-  let mut score_vec: Vec<(&String, &usize)> = scores.iter().collect();
-  score_vec.sort_by(|a, b| b.1.cmp(a.1));
-
-  Ok(score_vec[0].0.to_string())
+  Ok(highest_with_score.0)
 }
 
 pub fn print_bytes_in_binary(bytes: Bytes) {
@@ -75,4 +61,18 @@ pub fn print_bytes(bytes: &Bytes) {
   }
 
   println!("]");
+}
+
+fn score_char(input_bytes: &Bytes, ch: u8) -> (String, usize) {
+  let length = input_bytes.len();
+
+  // XOR against the char repeated the right number of times
+  let repeated = vec![ch; length];
+  let xored_bytes = fixed_xor_bytes(&input_bytes, &repeated);
+  let xored = String::from_utf8_lossy(&xored_bytes).into_owned();
+
+  // Score the letter freqeuncies of the top 12 letters
+  let score = language::score_string(&xored);
+
+  (xored, score)
 }
