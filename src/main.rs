@@ -4,6 +4,7 @@ use structopt::StructOpt;
 enum Cli {
     HexToBase64 { hextext: String },
     FixedXOR { first: String, second: String },
+    DeciperSingleByteXOR { input: String },
 }
 
 fn main() {
@@ -11,7 +12,8 @@ fn main() {
 
     let output = match args {
         Cli::HexToBase64 { hextext } => cryptopals::hex_to_base64(hextext),
-        Cli::FixedXOR { first, second } => cryptopals::fixed_xor(first, second),
+        Cli::FixedXOR { first, second } => cryptopals::fixed_xor(&first, &second),
+        Cli::DeciperSingleByteXOR { input } => cryptopals::decipher_single_byte_xor(input),
     };
 
     match output {

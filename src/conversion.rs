@@ -1,4 +1,4 @@
-pub fn hex_to_bytes(hex: String) -> Result<Vec<u8>, &'static str> {
+pub fn hex_to_bytes(hex: &String) -> Result<Vec<u8>, &'static str> {
   let mut nibbles = Vec::new();
 
   for hex_char in hex.chars() {
