@@ -1,10 +1,22 @@
+use std::path::PathBuf;
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
 enum Cli {
-    HexToBase64 { hextext: String },
-    FixedXOR { first: String, second: String },
-    DeciperSingleByteXOR { input: String },
+    HexToBase64 {
+        hextext: String,
+    },
+    FixedXOR {
+        first: String,
+        second: String,
+    },
+    DeciperSingleByteXOR {
+        input: String,
+    },
+    DetectSingleCharacterXor {
+        #[structopt(parse(from_os_str))]
+        filename: PathBuf,
+    },
 }
 
 fn main() {
@@ -14,6 +26,7 @@ fn main() {
         Cli::HexToBase64 { hextext } => cryptopals::hex_to_base64(hextext),
         Cli::FixedXOR { first, second } => cryptopals::fixed_xor(&first, &second),
         Cli::DeciperSingleByteXOR { input } => cryptopals::decipher_single_byte_xor(input),
+        Cli::DetectSingleCharacterXor { filename } => cryptopals::detect_single_character_xor(filename)
     };
 
     match output {

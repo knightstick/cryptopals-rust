@@ -1,7 +1,10 @@
+use std::path::PathBuf;
+
 pub mod bytes;
 pub mod conversion;
 pub mod decipher;
 pub mod language;
+pub mod utils;
 
 pub fn hex_to_base64(hex: String) -> Result<String, &'static str> {
   let bytes = conversion::hex_to_bytes(&hex)?;
@@ -21,4 +24,9 @@ pub fn fixed_xor(first: &String, second: &String) -> Result<String, &'static str
 pub fn decipher_single_byte_xor(input: String) -> Result<String, &'static str> {
   let input_bytes = conversion::hex_to_bytes(&input)?;
   decipher::single_byte_xor(input_bytes)
+}
+
+pub fn detect_single_character_xor(filename: PathBuf) -> Result<String, &'static str> {
+  let candidate_bytes = utils::bytes_from_file(filename)?;
+  decipher::detect_single_character_xor(candidate_bytes)
 }
