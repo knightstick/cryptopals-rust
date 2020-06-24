@@ -17,6 +17,10 @@ enum Cli {
         #[structopt(parse(from_os_str))]
         filename: PathBuf,
     },
+    RepeatingKeyXOR {
+        input: String,
+        key: String,
+    },
 }
 
 fn main() {
@@ -26,7 +30,10 @@ fn main() {
         Cli::HexToBase64 { hextext } => cryptopals::hex_to_base64(hextext),
         Cli::FixedXOR { first, second } => cryptopals::fixed_xor(&first, &second),
         Cli::DeciperSingleByteXOR { input } => cryptopals::decipher_single_byte_xor(input),
-        Cli::DetectSingleCharacterXor { filename } => cryptopals::detect_single_character_xor(filename)
+        Cli::DetectSingleCharacterXor { filename } => {
+            cryptopals::detect_single_character_xor(filename)
+        }
+        Cli::RepeatingKeyXOR { input, key } => cryptopals::repeating_key_xor(&input, &key),
     };
 
     match output {

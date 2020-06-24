@@ -3,6 +3,7 @@ use std::path::PathBuf;
 pub mod bytes;
 pub mod conversion;
 pub mod decipher;
+pub mod encrypt;
 pub mod language;
 pub mod utils;
 
@@ -29,4 +30,14 @@ pub fn decipher_single_byte_xor(input: String) -> Result<String, &'static str> {
 pub fn detect_single_character_xor(filename: PathBuf) -> Result<String, &'static str> {
   let candidate_bytes = utils::bytes_from_file(filename)?;
   decipher::detect_single_character_xor(candidate_bytes)
+}
+
+pub fn repeating_key_xor(input: &String, key: &String) -> Result<String, &'static str> {
+  let input_bytes = input.clone().into_bytes();
+  let key_bytes: bytes::Bytes = key.clone().into_bytes();
+
+  let xored_bytes = encrypt::repeating_key_xor(&input_bytes, &key_bytes)?;
+  let hex = conversion::bytes_to_hex(xored_bytes)?;
+
+  Ok(hex)
 }
